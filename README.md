@@ -161,6 +161,10 @@ In this how-to we'll pick the second route, if that doesn't work for you or if y
 other route, then check the [scripts](/scripts) folder for more information about how to cross
 compile the `std` crate from source.
 
+**UPDATE**: Another way to get a cross compiled `std` crate is to compile it yourself using cargo
+and the `rustc` you already have installed, this is way faster that using the Rust build system, it
+takes less than one minute. Check [this repository] for more information.
+
 You can get the pre-compiled crates from [here].
 
 [here]: https://www.dropbox.com/sh/e5fy42812q4am68/AACKAMp_Otg4Ii9QJPXq-PAZa?dl=0
@@ -305,6 +309,49 @@ $ ssh root@openwrt ./hello
 Hello, world!
 ```
 
+## Reducing binary size
+
+Rust binaries can be quite large, here are some ways to make them smaller.
+
+### Increase optimization level
+
+With `rustc`: pass the `-O` or `--opt-level=3` flag
+
+With `cargo`: build in release mode `cargo build --target=$TRIPLE --release`
+
+### Use Link Time Optimization (LTO)
+
+With `rustc`: pass the `-C lto` flag
+
+With `cargo`, you'll need to enable it per profile:
+
+```
+// Cargo.toml
+[profile.release]
+lto = true
+```
+
+Enabling LTO greatly increases build time, so I recommend using it only for release, and keeping it
+disabled during development for faster edit-compile-test loops.
+
+### Strip symbol information
+
+With `rustc`: pass the `-C link-args=-s` flag
+
+With `cargo`: use `cargo rustc` instead of `cargo build`, example:
+
+```
+cargo rustc --target=$TRIPLE --release -- -C link-args=-s
+```
+
+### Remove non-essential features
+
+If you are cross compiling the `std` crate using `cargo`, then you can disable `RUST_BACKTRACE`
+support or switch to malloc (instead of jemalloc), this can easily reduce binary sizes by 200KB.
+Check [this repository] for more information about cross compiling the `std` crate using cargo.
+
 ---
 
 That's all for this how-to, happy cross compiling!
+
+[this repository]: https://github.com/japaric/std-with-cargo
