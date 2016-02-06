@@ -1,3 +1,26 @@
+# Status
+
+This document has been **SUPERSEDED** by [`rust-cross`], an extensive cross compilation guide.
+
+This document won't receive updates or fixes in the case it has wrong information.
+
+[`rust-cross`]: https://github.com/japaric/rust-cross
+
+P.S. There *is* some wrong information here. The correct triple for OpenWRT 15.05 and older is
+`mips-unknown-linux-uclibc` (which is not currently a supported target) and not
+`mips-unknown-linux-gnu`. Now because there is some (or many?) ABI similarities between uClibc and
+glibc, some programs cross compiled to `mips-unknown-linux-uclibc` *may* work on OpenWRT but not
+*all* programs are guaranteed to work.
+
+P.P.S. The trunk version of OpenWRT, which is covered by the triple `mips-unknown-linux-musl`,
+**is** a [supported target].
+
+[supported target]: https://github.com/rust-lang/rust/pull/31298
+
+-- @japaric, 2016/02/05
+
+---
+
 # `Rust on OpenWRT (MIPS edition)`
 
 This how-to covers:
